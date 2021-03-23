@@ -1,159 +1,183 @@
-import React, { Component } from 'react';
-import { reduxForm, Field } from 'redux-form';
-import logo from './logo.svg';
 import './App.css';
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Switch, Route, Link,
+  useHistory, Redirect,
+  useLocation, useRouteMatch,
+  useParams
+} from "react-router-dom";
 
-let SignInForm = props => {
-  const{handleSubmit} = props;
-  return <form onSubmit={handleSubmit} className="form"> 
-      <div className="field">
-        <div className="control">
-          <Field name="firstName" component={renderField} 
-            type="text" label="First Name"/>
-        </div>
+export default function AuthExample(){
+  return (
+    <Router>
+      <div className="App">
+          <nav
+            className="navbar container"
+            role="navigation"
+            aria-label="main navigation"
+          >
+            <div className="navbar-brand">
+              <b className="navbar-item is-size-4 ">ecommerce</b>
+              
+            </div>
+              <div className= "navbar-menu ">
+                <Link to="/home" className="navbar-item">
+                  Home
+                </Link>
+                <Link to="/products" className="navbar-item">
+                  Products
+                </Link>
+              </div>
+            </nav>
+            <Switch>
+              <Route path="/home" component={Home} />
+              <Route path="/login">
+                <LoginPage />
+              </Route>
+              <PrivateRoute path="/products">
+                <ProductList />
+                <Categories />
+              </PrivateRoute>
+            </Switch>
+          </div>
+    </Router>
+  );
+}
+function Home(){
+  return (
+    <div  className="hero is-primary">
+      <div className="hero-body container">
+        <h4 className="title">Home</h4>
       </div>
-      
-      <div className="field">
-        <div className="control">
-          <Field name="lastName" component={renderField} 
-            type="text" label="Last Name"/>
-        </div>
+    </div>
+  );
+}
+function ProductList(){
+  return (
+    <div  className="hero is-primary">
+      <div className="hero-body container">
+        <h4 className="title">Our Products</h4>
       </div>
-
-      <div className="field">
-        <div className="control">
-          <Field name="email" component={renderField} 
-            type="email" label="Email Name"/>
+    </div>
+  );
+}
+function Categories(){
+  let { path, url } = useRouteMatch();
+  return (
+    <div className="container">
+      <b style={{ textTransform: "capitalize" }}>
+        Categories
+      </b> 
+      <ul>
+        <li>
+          <Link to={`${url}/Dress`}>Baju</Link>
+        </li>
+        <li>
+          <Link to={`${url}/Sneakers`}>Sepatu</Link>
+        </li>
+      </ul>
+      <Switch>
+        <Route exact path={path}>
+          <h3>Please select a Category.</h3>
+        </Route>
+        <Route path={`${path}/:topicId`}>
+          <Topic />
+        </Route>
+      </Switch>
+    </div>
+  );
+}
+function Topic(){
+  let {topicId} = useParams();
+  return(
+    <div className="container">
+      <div className="column columns is-multiline">
+        <div className=" column is-half">
+          <div className="box">
+            <div className="media">
+              <div className="media-left">
+                <figure className="image is-120x120">
+                  <img
+                    src="https://via.placeholder.com/120" alt="placeholder"
+                  />
+                </figure>
+              </div>
+                <b style={{ textTransform: "capitalize" }}>
+                  {topicId}
+                  <span className="tag is-primary">Rp.200.000</span>
+                </b>
+            </div>
+          </div>
         </div>
-      </div>
-
-      <div className="field">
-        <div className="control">
-          <Field name="age" component={renderField} 
-            type="number" label="Age"/>
-        </div>
-      </div>
-
-      <div className="field">
-        <div className="control">
-          <label className="label">Proficiency</label>
-          <div className="select">
-            <Field className="input" name="proficiency" component="select">
-              <option/>
-              <option value="beginer">Beginer Dev</option>
-              <option value="intermediate">Intermediate Dev</option>
-              <option value="expert">Expert Dev</option>
-            </Field>
-
+        <div className=" column is-half">
+          <div className="box">
+            <div className="media">
+              <div className="media-left">
+                <figure className="image is-120x120">
+                  <img
+                    src="https://via.placeholder.com/120"
+                  />
+                </figure>
+              </div>
+              <b style={{ textTransform: "capitalize" }}>
+                  {topicId}
+                  <span className="tag is-primary">Rp.200.000</span>
+              </b>
+            </div>
           </div>
         </div>
       </div>
-
-      <div className="field">
-        <div className="control">
-          <label className="label">Gender</label>
-          <label className="radio">
-            <Field name="gender" component="input" type="radio" value="male" />
-            {''}
-            Male
-          </label>
-          <label className="radio">
-            <Field name="gender" component="input" type="radio" value="female" />
-            {''}
-            Female
-          </label>
-        </div>
-      </div>
-
-      <div className="field">
-        <div className="control">
-          <label className="checkbox">
-          <Field name="saveDetails" id="saveDetails" component="input" 
-            type="checkbox"/>
-          Save Details
-          </label>
-        </div>
-      </div>
-    
-      <div className="field">
-        <div className="control">
-          <label className="label">Message</label>
-          <Field className="textarea" name="message" component="textarea" />
-        </div>
-      </div>
-    
-      <div className="field">
-        <div className="control">
-          <button className="button is-link">Submit</button>
-        </div>
-      </div>
-    </form>
-}
-
-const validate = val => {
-  const errors = {};
-  if (!val.firstName) {
-    console.log('First Name is required');
-    errors.firstName = 'Required';
-  }
-  if (!val.lastName) {
-    console.log('Last Name is required');
-    errors.lastName = 'Required';
-  }
-  if (!val.email) {
-    errors.email = 'Required';
-  } else if (!/^.+@.+$/i.test(val.email)) {
-    console.log('email is invalid');
-    errors.email = 'Invalid email address';
-  }
-  if (!val.age) {
-    console.log('age is required');
-    errors.age = 'Required'
-  } else if (isNaN(Number(val.age))) {
-    errors.age = 'Must be a number'
-  } else if (Number(val.age) < 18) {
-    errors.age = 'Sorry, you must be at least 18 years old'
-  }
-  return errors;
-};
-
-const renderField = ({ input, label, type, meta: { touched, error, warning } }) => (
-  <div>
-    <div className="control">
-      <label className="field">{label}</label>
-      <input className="input" {...input} placeholder={label} type={type}/>
-      {touched && ((error && <span>{error}</span>) || 
-                  (warning && <span>{warning}</span>))}
     </div>
-  </div>
-)
+  );
+}
+const fakeAuth = {
+  isAuthenticated: false,
+  authenticate(cb) {
+    fakeAuth.isAuthenticated = true;
+    setTimeout(cb, 100); //fake async
+  },
+  signout(cb) {
+    fakeAuth.isAuthenticated = false;
+    setTimeout(cb, 100);
+  }
+};
+function PrivateRoute({children, ...rest}) {
+  return (
+    <Route
+      {...rest}
+      render={({ location }) => 
+        fakeAuth.isAuthenticated ? (
+          children
+        ) : (
+          <Redirect
+            to={{
+              pathname:"/login",
+              state: { from: location }
+            }}
+          />
+        )
+      }
+    />
+  );
+}
+function LoginPage(){
+  let history = useHistory();
+  let location = useLocation();
 
-SignInForm = reduxForm({
-  form: 'signIn',
-  validate,
-})(SignInForm);
-
-class App extends Component {
-  
-  handleSignIn = values => {
-    console.log(values);
+  let { from } = location.state || { from: { pathname: "/" } };
+  let login = () => {
+    fakeAuth.authenticate(() => {
+      history.replace(from);
+    });
   };
 
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React x redux-form</h1>
-        </header>
-        <div className="container">
-          <p className="App-intro">
-            Contact Form
-          </p>
-          <SignInForm onSubmit={this.handleSignIn} />
-        </div>
-      </div>
-    );
-  }
+  return (
+    <div>
+      <p>You must log in to view the page at {from.pathname}</p>
+      <button className="button is-small is-outlined is-primary " onClick={login}>
+        Log in
+      </button>
+    </div>
+  );
 }
-export default App;

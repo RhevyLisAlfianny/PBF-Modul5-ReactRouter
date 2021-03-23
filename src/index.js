@@ -1,21 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { createStore, combineReducers } from 'redux';
-import { Provider } from 'react-redux';
-import { reducer as formReducer } from 'redux-form';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import "bulma/css/bulma.css";
 import './index.css';
+import * as serviceWorker from './serviceWorker';
 import App from './App';
-
 import reportWebVitals from './reportWebVitals';
 
-const rootReducer = combineReducers({
-  form: formReducer,
-});
-  const store = createStore(rootReducer);
-  ReactDOM.render(
-  <Provider store={store}>
-  <App />
-  </Provider>,
+
+ReactDOM.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
   document.getElementById('root')
-  );
+);
+
 reportWebVitals();
+//serviceWorker.unregister();
+
